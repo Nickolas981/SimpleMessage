@@ -13,6 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,7 +27,13 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import static com.example.nickolas.simplemessage.Reversed.reversed;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -37,12 +44,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     EditText text;
     Button bSend;
     public TextView result;
+    public FirebaseDatabase mDatebase;
 
 
     protected void onCreate(Bundle savedInstanceState) {
         setContentView(R.layout.activity_main);
         super.onCreate(savedInstanceState);
-        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
         bSend = (Button) findViewById(R.id.send);
         bSend.setOnClickListener(this);
         result = (TextView) findViewById(R.id.result);
@@ -56,6 +63,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 if (user != null) {
                     Toast.makeText(MainActivity.this, "signed_in:", Toast.LENGTH_SHORT).show();
                     Login.getToken();
+                    setDB();
+                    showMessages();
                 } else {
                     Toast.makeText(MainActivity.this, "signed_out", Toast.LENGTH_SHORT).show();
                     logIn();
@@ -65,6 +74,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         MainActivity.mAuth.addAuthStateListener(MainActivity.mAuthListener);
 
         text = (EditText) findViewById(R.id.text);
+        if (mDatebase == null)
+            setDB();
         showMessages();
 
     }
@@ -76,11 +87,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == 1){
+            if (resultCode == RESULT_OK){
+                Login.getToken();
+                setDB();
+                showMessages();
+            }
+        }
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_exit)
         {
             mAuth.signOut();
-            logIn();
+//            logIn();
         }
         return true;
     }
@@ -88,6 +110,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     void logIn(){
         Intent login = new Intent(MainActivity.this, Login.class);
         startActivityForResult(login, 1);
+    }
+
+    void setDB(){
+        mDatebase = FirebaseDatabase.getInstance();
     }
 
     @Override
@@ -99,9 +125,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     public void writeNameToDB(String name){
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference("main");
-
+        DatabaseReference myRef = mDatebase.getReference("main");
         myRef.child(idToken).child("last_name").setValue(name).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
@@ -113,24 +137,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     void sendMessage(String mess){
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference("messages");
+        Message message = new Message(mAuth.getCurrentUser().getEmail(), mess);
+        DatabaseReference myRef = mDatebase.getReference("messages");
         text.setText("");
         myRef =  myRef.push();
-
-        myRef.child("message").setValue(mess);
-        myRef.child("message").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                getSupportActionBar().setTitle(dataSnapshot.getValue().toString());
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-        myRef.child("email").setValue(mAuth.getCurrentUser().getEmail());
+        myRef.setValue(message);
     }
 
     @Override
@@ -143,20 +154,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     public void showMessages(){
-        FirebaseDatabase db = FirebaseDatabase.getInstance();
-        DatabaseReference ref = db.getReference("messages");
+        final int size = 5;
 
-        ref.addValueEventListener(new ValueEventListener() {
+        DatabaseReference ref = mDatebase.getReference("messages");
+        Query query = ref.limitToLast(size);
+        query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 result.setText("");
+                final ArrayList<Message> ALmessage = new ArrayList<>();
                 for (DataSnapshot message: dataSnapshot.getChildren()){
-                    String obj = message.child("message").getValue().toString();
-                    result.append(obj + "\n");
-//                    result.append(message.child("message").getValue().toString());
+                    ALmessage.add(message.getValue(Message.class));
+                }
+                for (Message message:reversed(ALmessage)){
+                    result.append(message + "    ");
+                    result.append(DateFormat.format("dd-MM-yyyy (HH:mm:ss)", message.getTimeMessage()));
+                    result.append("\n\n\n");
                 }
             }
-
             @Override
             public void onCancelled(DatabaseError databaseError) {
 
