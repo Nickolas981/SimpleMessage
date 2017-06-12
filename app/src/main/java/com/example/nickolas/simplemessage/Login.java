@@ -62,7 +62,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                 registrate(ETemail.getText().toString(), ETpass.getText().toString());
                 break;
             case R.id.log_in:
-                signIn(ETemail.getText().toString(), ETpass.getText().toString());
+                signIn(ETemail.getText().toString(), ETpass.getText().toString(), false);
                 break;
         }
     }
@@ -83,10 +83,11 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
             pass = data.getStringExtra("pass");
             email = data.getStringExtra("email");
             photo = data.getStringExtra("photo");
-            signIn(email, pass);
+            signIn(email, pass, true);
             setUser(new User(name, email));
 //            getToken();
             uploadFile(photo);
+            finish();
         }
     }
 
@@ -101,7 +102,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
             @Override
             public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
                 if (task.isSuccessful()){
-                    Toast.makeText(Login.this, "ok", Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(Login.this, "ok", Toast.LENGTH_SHORT).show();
                 }else {
                     Toast.makeText(Login.this, task.getException().toString(), Toast.LENGTH_SHORT).show();
                     ETemail.setText(task.getException().toString());
@@ -112,7 +113,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
 
     }
 
-    public void signIn(final String email, String pass) {
+    public void signIn(final String email, String pass ,final boolean reg) {
         MainActivity.mAuth.signInWithEmailAndPassword(email, pass).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
@@ -121,7 +122,9 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                     Intent intent = new Intent(Login.this, MainActivity.class);
                     setResult(RESULT_OK, intent);
                     getToken();
-                    finish();
+                    if  (!reg) {
+                        finish();
+                    }
                 } else {
                     Toast.makeText(Login.this, "Error", Toast.LENGTH_SHORT).show();
                 }
