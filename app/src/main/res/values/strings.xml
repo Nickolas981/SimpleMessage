@@ -1,10 +1,11 @@
 <resources>
     <string name="app_name">SimpleMessage</string>
-    <string name="email">email</string>
-    <string name="pass">password</string>
+    <string name="email">Email</string>
+    <string name="pass">Password</string>
     <string name="log_in">log in</string>
     <string name="reg">reg</string>
     <string name="exit">Exit</string>
+    <string name="registration">Registration</string>
     <string name="title_activity_login">Sign in</string>
 
     <!-- Strings related to login -->
@@ -20,4 +21,7 @@
         completions."
     </string>
     <string name="send">send</string>
+    <string name="name_and_surname">Name and Surname</string>
+    <string name="cancel">Cancel</string>
+    <string name="submit">Submit</string>
 </resources>

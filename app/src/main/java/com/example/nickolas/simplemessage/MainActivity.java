@@ -102,7 +102,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (item.getItemId() == R.id.action_exit)
         {
             mAuth.signOut();
-//            logIn();
+            logIn();
         }
         return true;
     }

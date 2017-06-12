@@ -1,11 +1,9 @@
 package com.example.nickolas.simplemessage;
 
 import android.content.Intent;
-import android.support.annotation.MainThread;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -38,18 +36,22 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
 
     }
 
-    void setEmail(String email){
+    void setUser(User user) {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference("main");
-
-        myRef.child(MainActivity.idToken).child("email").setValue(email).addOnCompleteListener(new OnCompleteListener<Void>() {
+        myRef.child(MainActivity.idToken).setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
-                if (!task.isSuccessful()){
+                if (!task.isSuccessful()) {
                     Toast.makeText(Login.this, "Error", Toast.LENGTH_SHORT).show();
                 }
             }
         });
+    }
+
+    public static void getToken() {
+        FirebaseUser mUser = MainActivity.mAuth.getCurrentUser();
+        MainActivity.idToken = mUser.getUid();
     }
 
 
@@ -60,42 +62,37 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                 registrate(ETemail.getText().toString(), ETpass.getText().toString());
                 break;
             case R.id.log_in:
-                signIn(ETemail.getText().toString(), ETpass.getText().toString(), false);
+                signIn(ETemail.getText().toString(), ETpass.getText().toString());
                 break;
         }
     }
 
 
-    public void registrate(final String email,final String pass) {
-        MainActivity.mAuth.createUserWithEmailAndPassword(email, pass).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                if (task.isSuccessful()) {
-                    Toast.makeText(Login.this, "OK", Toast.LENGTH_SHORT).show();
-                    signIn(email, pass, true);
-                } else {
-                    Toast.makeText(Login.this, "Error", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
+    public void registrate(final String email, final String pass) {
+        Intent intent = new Intent(this, Registration.class);
+        intent.putExtra("email", email);
+        intent.putExtra("pass", pass);
+        startActivityForResult(intent, 2);
     }
 
-    public static void getToken(){
-        FirebaseUser mUser = MainActivity.mAuth.getCurrentUser();
-        MainActivity.idToken = mUser.getUid();
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == 2 && resultCode ==RESULT_OK && data != null){
+            String name, pass, email;
+            name = data.getStringExtra("name");
+            pass = data.getStringExtra("pass");
+            email = data.getStringExtra("email");
+            signIn(email, pass);
+            setUser(new User(name, email));
+        }
     }
 
-    public void signIn(final String email, String pass, final boolean first) {
+    public void signIn(final String email, String pass) {
         MainActivity.mAuth.signInWithEmailAndPassword(email, pass).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
-
                     getToken();
-                    if (first){
-                        setEmail(email);
-                    }
                     Intent intent = new Intent(Login.this, MainActivity.class);
                     setResult(RESULT_OK, intent);
                     finish();
