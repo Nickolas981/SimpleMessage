@@ -23,6 +23,7 @@ public class Registration extends AppCompatActivity implements View.OnClickListe
     EditText name,email, pass;
     Button submit, cancel;
     private final int GALLERY_REQUEST = 1;
+    Uri URIphoto;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,8 +75,8 @@ public class Registration extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == GALLERY_REQUEST && resultCode == RESULT_OK && data != null){
-            Uri photo = data.getData();
-            this.photo.setImageURI(photo);
+            URIphoto = data.getData();
+            this.photo.setImageURI(URIphoto);
         }
     }
 
@@ -105,11 +106,14 @@ public class Registration extends AppCompatActivity implements View.OnClickListe
         intent.putExtra("email", email);
         intent.putExtra("name", name);
         intent.putExtra("pass", pass);
+        if (photo != null){
+            intent.putExtra("photo", URIphoto.toString());
+        }
         setResult(RESULT_OK, intent);
         finish();
     }
 
     private  boolean checkFields(){
-        return email.getText() != null && name.getText() != null && pass.getText() != null;
+        return !email.getText().toString().equals("") && !name.getText().toString().equals("") && !pass.getText().toString().equals("");
     }
 }

@@ -1,25 +1,32 @@
 package com.example.nickolas.simplemessage;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 public class Login extends AppCompatActivity implements View.OnClickListener {
 
     EditText ETemail, ETpass;
     Button logIn, registr;
+    private StorageReference mStorageRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,14 +46,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
     void setUser(User user) {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference("main");
-        myRef.child(MainActivity.idToken).setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if (!task.isSuccessful()) {
-                    Toast.makeText(Login.this, "Error", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
+        myRef.child(MainActivity.idToken).setValue(user);
     }
 
     public static void getToken() {
@@ -78,13 +78,38 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == 2 && resultCode ==RESULT_OK && data != null){
-            String name, pass, email;
+            String name, pass, email, photo;
             name = data.getStringExtra("name");
             pass = data.getStringExtra("pass");
             email = data.getStringExtra("email");
+            photo = data.getStringExtra("photo");
             signIn(email, pass);
             setUser(new User(name, email));
+//            getToken();
+            uploadFile(photo);
         }
+    }
+
+    public void uploadFile(String photo){
+        Uri uri = Uri.parse(photo);
+
+        mStorageRef = FirebaseStorage.getInstance().getReferenceFromUrl("gs://simplemessage-abdee.appspot.com").child("avatars");
+
+        StorageReference imageRef = mStorageRef.child(MainActivity.idToken).child("avatar.jpg");
+
+        imageRef.putFile(uri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                if (task.isSuccessful()){
+                    Toast.makeText(Login.this, "ok", Toast.LENGTH_SHORT).show();
+                }else {
+                    Toast.makeText(Login.this, task.getException().toString(), Toast.LENGTH_SHORT).show();
+                    ETemail.setText(task.getException().toString());
+                    Log.d("Error", task.getException().toString());
+                }
+            }
+        });
+
     }
 
     public void signIn(final String email, String pass) {
@@ -95,6 +120,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                     getToken();
                     Intent intent = new Intent(Login.this, MainActivity.class);
                     setResult(RESULT_OK, intent);
+                    getToken();
                     finish();
                 } else {
                     Toast.makeText(Login.this, "Error", Toast.LENGTH_SHORT).show();

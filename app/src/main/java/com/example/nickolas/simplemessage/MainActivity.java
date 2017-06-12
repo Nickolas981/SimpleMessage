@@ -90,7 +90,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == 1){
             if (resultCode == RESULT_OK){
-                Login.getToken();
+//                Login.getToken();
                 setDB();
                 showMessages();
             }
@@ -102,7 +102,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (item.getItemId() == R.id.action_exit)
         {
             mAuth.signOut();
-            logIn();
+//            logIn();
         }
         return true;
     }
@@ -155,7 +155,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public void showMessages(){
         final int size = 5;
-
         DatabaseReference ref = mDatebase.getReference("messages");
         Query query = ref.limitToLast(size);
         query.addValueEventListener(new ValueEventListener() {
