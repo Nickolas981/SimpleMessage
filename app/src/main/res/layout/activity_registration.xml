@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.example.nickolas.simplemessage.Registration">
+    tools:context="com.example.nickolas.simplemessage.Registration"
+    android:background="@drawable/login_back">
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/registration_photo"
@@ -14,8 +15,7 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginBottom="17dp"
         android:layout_marginTop="50dp"
-        android:scaleType="centerCrop"
-        android:src="@drawable/ic_add_circle_black_24dp" />
+        android:src="@drawable/photo_download" />
 
     <android.support.v7.widget.CardView
         android:layout_width="wrap_content"
@@ -105,6 +105,7 @@
                 android:layout_weight="1"
                 android:layout_height="48dp"
                 android:background="@null"
+                android:textColor="#fff"
                 android:text="@string/cancel"/>
         </LinearLayout>
 
