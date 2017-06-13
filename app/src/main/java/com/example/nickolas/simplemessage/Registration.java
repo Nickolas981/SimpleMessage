@@ -96,6 +96,8 @@ public class Registration extends AppCompatActivity implements View.OnClickListe
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()){
                     setFields(email, name, pass);
+                } else {
+                    Toast.makeText(Registration.this, "Error", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -106,8 +108,10 @@ public class Registration extends AppCompatActivity implements View.OnClickListe
         intent.putExtra("email", email);
         intent.putExtra("name", name);
         intent.putExtra("pass", pass);
-        if (photo != null){
+        if (URIphoto != null){
             intent.putExtra("photo", URIphoto.toString());
+        } else {
+            intent.putExtra("photo", "empty");
         }
         setResult(RESULT_OK, intent);
         finish();

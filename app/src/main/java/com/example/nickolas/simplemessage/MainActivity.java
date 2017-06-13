@@ -55,22 +55,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         result = (TextView) findViewById(R.id.result);
 
 
-        MainActivity.mAuth = FirebaseAuth.getInstance();
-        MainActivity.mAuthListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-                if (user != null) {
-                    Toast.makeText(MainActivity.this, "signed_in:", Toast.LENGTH_SHORT).show();
-                    Login.getToken();
-                    setDB();
-                    showMessages();
-                } else {
-                    Toast.makeText(MainActivity.this, "signed_out", Toast.LENGTH_SHORT).show();
-                    logIn();
-                }
-            }
-        };
+        mAuth = FirebaseAuth.getInstance();
+        setListner();
         MainActivity.mAuth.addAuthStateListener(MainActivity.mAuthListener);
 
         text = (EditText) findViewById(R.id.text);
@@ -93,8 +79,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //                Login.getToken();
                 setDB();
                 showMessages();
+                setListner();
             }
         }
+    }
+
+    private void setListner(){
+        mAuthListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+                if (user != null) {
+                    Toast.makeText(MainActivity.this, "signed_in:", Toast.LENGTH_SHORT).show();
+                    Login.getToken();
+                    setDB();
+                    showMessages();
+                } else {
+                    Toast.makeText(MainActivity.this, "signed_out", Toast.LENGTH_SHORT).show();
+                    logIn();
+                }
+            }
+        };
     }
 
     @Override
