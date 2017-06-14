@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -15,17 +16,26 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+
+import java.util.ArrayList;
+
+import static com.example.nickolas.simplemessage.Reversed.reversed;
 
 public class Login extends AppCompatActivity implements View.OnClickListener {
 
     EditText ETemail, ETpass;
     Button logIn, registr;
     private StorageReference mStorageRef;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +80,8 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
     }
 
 
+
+
     public void registrate(final String email, final String pass) {
         Intent intent = new Intent(this, Registration.class);
         intent.putExtra("email", email);
@@ -94,7 +106,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
 
         mStorageRef = FirebaseStorage.getInstance().getReferenceFromUrl("gs://simplemessage-abdee.appspot.com").child("avatars");
 
-        StorageReference imageRef = mStorageRef.child(MainActivity.idToken).child("avatar.jpg");
+        StorageReference imageRef = mStorageRef.child(MainActivity.idToken + ".jpg");
 
         imageRef.putFile(uri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
             @Override
@@ -120,8 +132,9 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                     Intent intent = new Intent(Login.this, MainActivity.class);
                     setResult(RESULT_OK, intent);
                     getToken();
+                    finish();
                 } else {
-                    Toast.makeText(Login.this, "Error", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Login.this, "Error" + task.getException(), Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -132,7 +145,6 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
-                    getToken();
                     getToken();
                     if (!photo.equals("empty")) {
                         uploadFile(photo);

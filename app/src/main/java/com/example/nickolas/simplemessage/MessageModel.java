@@ -4,7 +4,7 @@ import java.util.Date;
 
 
 
-public class Message {
+public class MessageModel {
 
     public String getEmail() {
         return email;
@@ -22,11 +22,11 @@ public class Message {
     private long timeMessage;
 
 
-    public Message() {
+    public MessageModel() {
 
     }
 
-    public Message(String email, String body) {
+    public MessageModel(String email, String body) {
         this.email = email;
         this.body = body;
         timeMessage = new Date().getTime();

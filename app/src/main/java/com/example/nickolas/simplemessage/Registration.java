@@ -1,6 +1,8 @@
 package com.example.nickolas.simplemessage;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
@@ -16,6 +18,8 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.database.FirebaseDatabase;
+
+import java.io.IOException;
 
 public class Registration extends AppCompatActivity implements View.OnClickListener{
 
@@ -76,7 +80,21 @@ public class Registration extends AppCompatActivity implements View.OnClickListe
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == GALLERY_REQUEST && resultCode == RESULT_OK && data != null){
             URIphoto = data.getData();
-            this.photo.setImageURI(URIphoto);
+            Bitmap bitmap  = BitmapFactory.decodeResource(getResources(), R.drawable.common_full_open_on_phone);
+            try {
+                bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), URIphoto);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            float aspectRatio = bitmap.getWidth() /
+                    (float) bitmap.getHeight();
+            int width = 720;
+            int height = Math.round(width / aspectRatio);
+
+            bitmap = Bitmap.createScaledBitmap(
+                    bitmap, width, height, false);
+            URIphoto =  Utils.getImageUri(this, bitmap);
+            photo.setImageBitmap(bitmap);
         }
     }
 
@@ -97,7 +115,7 @@ public class Registration extends AppCompatActivity implements View.OnClickListe
                 if (task.isSuccessful()){
                     setFields(email, name, pass);
                 } else {
-                    Toast.makeText(Registration.this, "Error", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Registration.this, "Error" + task.getException(), Toast.LENGTH_SHORT).show();
                 }
             }
         });
