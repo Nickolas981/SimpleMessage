@@ -5,7 +5,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -20,21 +19,17 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-
-import java.util.ArrayList;
-
-import static com.example.nickolas.simplemessage.Reversed.reversed;
 
 public class Login extends AppCompatActivity implements View.OnClickListener {
 
     EditText ETemail, ETpass;
     Button logIn, registr;
     private StorageReference mStorageRef;
+    public static User user;
 
 
     @Override
@@ -78,8 +73,6 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                 break;
         }
     }
-
-
 
 
     public void registrate(final String email, final String pass) {
@@ -129,13 +122,29 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
                     getToken();
+                    setUser();
                     Intent intent = new Intent(Login.this, MainActivity.class);
                     setResult(RESULT_OK, intent);
-                    getToken();
                     finish();
                 } else {
                     Toast.makeText(Login.this, "Error" + task.getException(), Toast.LENGTH_SHORT).show();
                 }
+            }
+        });
+    }
+
+    public static void setUser() {
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("main").child(MainActivity.idToken);
+        ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                user = new User("1", "1");
+                user = dataSnapshot.getValue(User.class);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
             }
         });
     }

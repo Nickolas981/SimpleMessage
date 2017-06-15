@@ -18,8 +18,21 @@ public class MessageModel {
         return timeMessage;
     }
 
-    private String email, body;
+    public String getName() {
+        return name;
+    }
+    public String getUid() {
+        return uid;
+    }
+
+    private String email;
+    private String body;
+    private String name;
+
+
+    private String uid;
     private long timeMessage;
+
 
 
     public MessageModel() {
@@ -29,7 +42,9 @@ public class MessageModel {
     public MessageModel(String email, String body) {
         this.email = email;
         this.body = body;
+        this.name = Login.user.name;
         timeMessage = new Date().getTime();
+        uid = MainActivity.idToken;
     }
 
     @Override

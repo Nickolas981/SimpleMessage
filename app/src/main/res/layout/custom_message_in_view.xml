@@ -16,7 +16,7 @@
         android:layout_alignParentTop="true"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
-        android:visibility="gone"
+        android:src="@drawable/photo_download"
         tools:layout_gravity="top" />
 
     <LinearLayout
@@ -41,8 +41,7 @@
             android:id="@+id/message"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:maxWidth="250dp"
-            android:text="asdasdasdasdasdadasdasdfasdfsdfsdfasdfasdfsdfasdadadasdasd" />
+            android:maxWidth="250dp"/>
         <LinearLayout
             android:layout_width="250dp"
             android:layout_height="wrap_content"
