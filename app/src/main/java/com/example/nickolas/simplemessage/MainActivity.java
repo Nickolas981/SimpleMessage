@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -158,20 +159,54 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public void showMessages() {
         DatabaseReference ref = mDatebase.getReference("messages");
-        ref.addValueEventListener(new ValueEventListener() {
+//        ref.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//                if(mAdapter == null) {
+//                    ArrayList<MessageModel> ALmessage = new ArrayList<>();
+//                    for (DataSnapshot message : dataSnapshot.getChildren()) {
+//                        ALmessage.add(message.getValue(MessageModel.class));
+//                    }
+////                    if (mAdapter == null) {
+//                        mAdapter = new CustomMessageAdapter(ALmessage, MainActivity.this);
+//                        messageList.setAdapter(mAdapter);
+////                    } else {
+////                        mAdapter.addItems(ALmessage);
+////                    }
+//                    messageList.scrollToPosition(mAdapter.getItemCount() - 1);
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//
+//            }
+//        });
+
+        ref.addChildEventListener(new ChildEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                ArrayList<MessageModel> ALmessage = new ArrayList<>();
-                for (DataSnapshot message : dataSnapshot.getChildren()) {
-                    ALmessage.add(message.getValue(MessageModel.class));
-                }
-                if (mAdapter == null) {
-                    mAdapter = new CustomMessageAdapter(ALmessage, MainActivity.this);
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                if (mAdapter == null){
+                    mAdapter = new CustomMessageAdapter(new ArrayList<MessageModel>(), MainActivity.this);
                     messageList.setAdapter(mAdapter);
-                } else {
-                    mAdapter.addItems(ALmessage);
                 }
+                mAdapter.addItem(dataSnapshot.getValue(MessageModel.class));
                 messageList.scrollToPosition(mAdapter.getItemCount() - 1);
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
             }
 
             @Override

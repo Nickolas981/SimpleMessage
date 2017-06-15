@@ -66,6 +66,8 @@ public class Registration extends AppCompatActivity implements View.OnClickListe
             case R.id.registration_submit:
                 if (checkFields()){
                     registrate();
+                }else if (URIphoto == null){
+                    Toast.makeText(this, "Please upload photo", Toast.LENGTH_SHORT).show();
                 }else {
                     Toast.makeText(this, "Error, some fields are wrong!", Toast.LENGTH_SHORT).show();
                 }
@@ -136,6 +138,9 @@ public class Registration extends AppCompatActivity implements View.OnClickListe
     }
 
     private  boolean checkFields(){
-        return !email.getText().toString().equals("") && !name.getText().toString().equals("") && !pass.getText().toString().equals("");
+        return !email.getText().toString().equals("")
+                && !name.getText().toString().equals("")
+                && !pass.getText().toString().equals("")
+                && URIphoto != null;
     }
 }

@@ -14,10 +14,6 @@ import com.google.firebase.storage.FirebaseStorage;
 
 import java.util.ArrayList;
 
-/**
- * Created by Nickolas on 14.06.2017.
- */
-
 public class CustomMessageAdapter extends RecyclerView.Adapter<CustomMessageAdapter.ViewHolder> {
 
     private ArrayList<MessageModel> messageModel;
@@ -31,6 +27,11 @@ public class CustomMessageAdapter extends RecyclerView.Adapter<CustomMessageAdap
     public void addItems(ArrayList<MessageModel> message){
         messageModel = message;
         notifyItemInserted(message.size()-1);
+    }
+
+    public  void addItem(MessageModel messageModel){
+        this.messageModel.add(messageModel);
+        notifyItemInserted(this.messageModel.size() - 1);
     }
 
     @Override
