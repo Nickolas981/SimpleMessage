@@ -111,7 +111,7 @@ public class Registration extends AppCompatActivity implements View.OnClickListe
         pass = this.pass.getText().toString();
         name = this.name.getText().toString();
 
-        MainActivity.mAuth.createUserWithEmailAndPassword(email, pass).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+        Firebasse.getmAuth().createUserWithEmailAndPassword(email, pass).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()){

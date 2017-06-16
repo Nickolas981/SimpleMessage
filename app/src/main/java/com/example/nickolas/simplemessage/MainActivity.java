@@ -29,13 +29,13 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
 
-    static String idToken;
-    static FirebaseAuth mAuth;
-    static FirebaseAuth.AuthStateListener mAuthListener;
+//    static String idToken;
+//    static FirebaseAuth mAuth;
+//    static FirebaseAuth.AuthStateListener mAuthListener;
     EditText text;
     Button bSend;
     private RecyclerView messageList;
-    public FirebaseDatabase mDatebase;
+//    public FirebaseDatabase mDatebase;
     private CustomMessageAdapter mAdapter;
 
 
@@ -47,15 +47,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         messageList = (RecyclerView) findViewById(R.id.message_list);
         messageList.setLayoutManager(new LinearLayoutManager(this));
-        mAuth = FirebaseAuth.getInstance();
-        setListner();
-        MainActivity.mAuth.addAuthStateListener(MainActivity.mAuthListener);
+        Firebasse.setmAuth();
+//        mAuth = FirebaseAuth.getInstance();
+
+//        setListner();
+        Firebasse.setmAuthListner();
+        Firebasse.setDB();
+//        MainActivity.mAuth.addAuthStateListener(MainActivity.mAuthListener);
 
         text = (EditText) findViewById(R.id.text);
 
 
-        if (mDatebase == null)
-            setDB();
+//        if (mDatebase == null)
+//            setDB();
         showMessages();
     }
 
@@ -70,53 +74,61 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onResume() {
         super.onResume();
-        if (mAuth.getCurrentUser() == null) {
+        if (Firebasse.getCurrentUser() == null) {
             Toast.makeText(this, "out", Toast.LENGTH_SHORT).show();
             logIn();
-        } else if (Login.user == null) {
-            Login.getToken();
-            Login.setUser();
+        } else if (Firebasse.getUser() == null) {
+            Firebasse.setuId();
+            Firebasse.setUser();
         }
+//        else if (Login.user == null) {
+//            Login.getToken();
+//            Login.setUser();
+//        }
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == 1) {
             if (resultCode == RESULT_OK) {
-                Login.getToken();
-                Login.setUser();
+                Firebasse.setuId();
+//                Login.getToken();
+                Firebasse.setUser();
+//                Login.setUser();
+                Firebasse.setDB();
                 mAdapter = null;
                 showMessages();
-                setDB();
+
             }
         }
     }
 
-    private void setListner() {
-        mAuthListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-                if (user != null) {
-                    Toast.makeText(MainActivity.this, "signed_in:", Toast.LENGTH_SHORT).show();
-//                    Login.getToken();
-//                    setDB();
-//                    showMessages();
-//                    Login.setUser();
-                } else {
-//                    Toast.makeText(MainActivity.this, "signed_out", Toast.LENGTH_SHORT).show();
-//                    logIn();
-                }
-            }
-        };
-    }
+//    private void setListner() {
+//        mAuthListener = new FirebaseAuth.AuthStateListener() {
+//            @Override
+//            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+//                FirebaseUser user = firebaseAuth.getCurrentUser();
+//                if (user != null) {
+//                    Toast.makeText(MainActivity.this, "signed_in:", Toast.LENGTH_SHORT).show();
+////                    Login.getToken();
+////                    setDB();
+////                    showMessages();
+////                    Login.setUser();
+//                } else {
+////                    Toast.makeText(MainActivity.this, "signed_out", Toast.LENGTH_SHORT).show();
+////                    logIn();
+//                }
+//            }
+//        };
+//    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_exit) {
-            mAuth.signOut();
+            Firebasse.signOut();
             logIn();
             mAdapter = null;
+//            messageList.clearOldPos
         }
         return true;
     }
@@ -126,22 +138,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         startActivityForResult(login, 1);
     }
 
-    void setDB() {
-        mDatebase = FirebaseDatabase.getInstance();
-    }
+//    void setDB() {
+//        mDatebase = FirebaseDatabase.getInstance();
+//    }
 
     @Override
     public void onStop() {
         super.onStop();
-        if (mAuthListener != null) {
-            mAuth.removeAuthStateListener(mAuthListener);
-        }
+        Firebasse.stop();
     }
 
 
     void sendMessage() {
-        MessageModel messageModel = new MessageModel(mAuth.getCurrentUser().getEmail(), text.getText().toString());
-        DatabaseReference myRef = mDatebase.getReference("messages");
+        MessageModel messageModel = new MessageModel(Firebasse.getCurrentUser().getEmail(), text.getText().toString());
+        DatabaseReference myRef = Firebasse.getmDatebase().getReference("messages");
         text.setText("");
         myRef = myRef.push();
         myRef.setValue(messageModel);
@@ -158,30 +168,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
     public void showMessages() {
-        DatabaseReference ref = mDatebase.getReference("messages");
-//        ref.addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//                if(mAdapter == null) {
-//                    ArrayList<MessageModel> ALmessage = new ArrayList<>();
-//                    for (DataSnapshot message : dataSnapshot.getChildren()) {
-//                        ALmessage.add(message.getValue(MessageModel.class));
-//                    }
-////                    if (mAdapter == null) {
-//                        mAdapter = new CustomMessageAdapter(ALmessage, MainActivity.this);
-//                        messageList.setAdapter(mAdapter);
-////                    } else {
-////                        mAdapter.addItems(ALmessage);
-////                    }
-//                    messageList.scrollToPosition(mAdapter.getItemCount() - 1);
-//                }
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//
-//            }
-//        });
+        DatabaseReference ref = Firebasse.getmDatebase().getReference("messages");
 
         ref.addChildEventListener(new ChildEventListener() {
             @Override

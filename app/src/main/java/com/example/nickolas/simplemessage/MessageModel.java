@@ -42,9 +42,12 @@ public class MessageModel {
     public MessageModel(String email, String body) {
         this.email = email;
         this.body = body;
-        this.name = Login.user.name;
+
+//        this.name = Login.user.name;
+        this.name = Firebasse.getUser().name;
         timeMessage = new Date().getTime();
-        uid = MainActivity.idToken;
+        uid = Firebasse.getuId();
+//        uid = MainActivity.idToken;
     }
 
     @Override

@@ -26,12 +26,14 @@ public class CustomMessageAdapter extends RecyclerView.Adapter<CustomMessageAdap
 
     public void addItems(ArrayList<MessageModel> message){
         messageModel = message;
-        notifyItemInserted(message.size()-1);
+//        notifyItemInserted(message.size()-1);
+        notifyDataSetChanged();
     }
 
     public  void addItem(MessageModel messageModel){
         this.messageModel.add(messageModel);
-        notifyItemInserted(this.messageModel.size() - 1);
+//        notifyItemInserted(this.messageModel.size() - 1);
+        notifyDataSetChanged();
     }
 
     @Override
