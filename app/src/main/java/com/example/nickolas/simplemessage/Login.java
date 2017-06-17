@@ -25,9 +25,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
 
     EditText ETemail, ETpass;
     Button logIn, registr;
-    private StorageReference mStorageRef;
     static Activity activity;
-//    public static User user;
 
 
     @Override
@@ -46,21 +44,6 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
 
     }
 
-    void setUser(User user) {
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference("main");
-        myRef.child(Firebasse.getuId()).setValue(user);
-        Intent intent = new Intent(Login.this, MainActivity.class);
-        setResult(RESULT_OK, intent);
-        finish();
-    }
-
-//    public static void getToken() {
-//        FirebaseUser mUser = MainActivity.mAuth.getCurrentUser();
-//        MainActivity.idToken = mUser.getUid();
-//    }
-//
-
     public void onClick(View v) {
         int id = v.getId();
         switch (id) {
@@ -72,7 +55,6 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                 break;
         }
     }
-
 
     public void registrate(final String email, final String pass) {
         Intent intent = new Intent(this, Registration.class);
@@ -93,85 +75,9 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
         }
     }
 
-
-    public static void sucses() {
+    public static void success() {
         Intent intent = new Intent(activity, MainActivity.class);
         activity.setResult(RESULT_OK, intent);
         activity.finish();
     }
-
-    public void uploadFile(String photo) {
-        Uri uri = Uri.parse(photo);
-
-        mStorageRef = FirebaseStorage.getInstance().getReferenceFromUrl("gs://simplemessage-abdee.appspot.com").child("avatars");
-
-        StorageReference imageRef = mStorageRef.child(Firebasse.getuId() + ".jpg");
-
-        imageRef.putFile(uri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-                if (task.isSuccessful()) {
-//                    Toast.makeText(Login.this, "ok", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(Login.this, task.getException().toString(), Toast.LENGTH_SHORT).show();
-                    ETemail.setText(task.getException().toString());
-                    Log.d("Error", task.getException().toString());
-                }
-            }
-        });
-
-    }
-
-//    public void signIn(final String email, String pass) {
-//        MainActivity.mAuth.signInWithEmailAndPassword(email, pass).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-//            @Override
-//            public void onComplete(@NonNull Task<AuthResult> task) {
-//                if (task.isSuccessful()) {
-//                    Firebasse.setuId();
-//                    Firebasse.setUser();
-////                    getToken();
-////                    setUser();
-//                    Intent intent = new Intent(Login.this, MainActivity.class);
-//                    setResult(RESULT_OK, intent);
-//                    finish();
-//                } else {
-//                    Toast.makeText(Login.this, "Error" + task.getException(), Toast.LENGTH_SHORT).show();
-//                }
-//            }
-//        });
-//    }
-
-//    public static void setUser() {
-//        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("main").child(MainActivity.idToken);
-//        ref.addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//                user = new User("1", "1");
-//                user = dataSnapshot.getValue(User.class);
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//
-//            }
-//        });
-//    }
-
-//    public void signIn(final String email, String pass, final String name, final String photo) {
-//        MainActivity.mAuth.signInWithEmailAndPassword(email, pass).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-//            @Override
-//            public void onComplete(@NonNull Task<AuthResult> task) {
-//                if (task.isSuccessful()) {
-////                     getToken();
-//                    Firebasse.setuId();
-//                    if (!photo.equals("empty")) {
-//                        uploadFile(photo);
-//                    }
-//                    Firebasse.setUser(new User(name, email));
-//                } else {
-//                    Toast.makeText(Login.this, "Error", Toast.LENGTH_SHORT).show();
-//                }
-//            }
-//        });
-//    }
 }

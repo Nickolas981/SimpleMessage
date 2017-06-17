@@ -3,7 +3,9 @@ package com.example.nickolas.simplemessage;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.text.format.DateFormat;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -26,14 +28,24 @@ public class CustomMessageAdapter extends RecyclerView.Adapter<CustomMessageAdap
 
     public void addItems(ArrayList<MessageModel> message){
         messageModel = message;
-//        notifyItemInserted(message.size()-1);
-        notifyDataSetChanged();
+        notifyItemInserted(message.size()-1);
     }
 
     public  void addItem(MessageModel messageModel){
-        this.messageModel.add(messageModel);
-//        notifyItemInserted(this.messageModel.size() - 1);
-        notifyDataSetChanged();
+        if (messageModel != null) {
+            this.messageModel.add(messageModel);
+            notifyItemInserted(this.messageModel.size() - 1);
+        }
+    }
+
+    public void removeItem(MessageModel m){
+        for(int i = 0; i < getItemCount(); i++){
+            if (messageModel.get(i).equals(m)){
+                messageModel.remove(i);
+                notifyItemRemoved(i);
+                return;
+            }
+        }
     }
 
     @Override
@@ -42,6 +54,8 @@ public class CustomMessageAdapter extends RecyclerView.Adapter<CustomMessageAdap
 
         v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.custom_message_in_view, parent, false);
+
+
 
         ViewHolder viewHolder = new ViewHolder(v);
 
@@ -64,13 +78,14 @@ public class CustomMessageAdapter extends RecyclerView.Adapter<CustomMessageAdap
         new DownloadImageTask(holder.avatar).downloadAvatar(messageModel.get(position).getUid());
     }
 
+
     @Override
     public int getItemCount() {
         return messageModel.size();
     }
 
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener {
         TextView name, body, time;
         ImageView avatar;
         View item;
@@ -78,6 +93,12 @@ public class CustomMessageAdapter extends RecyclerView.Adapter<CustomMessageAdap
         public ViewHolder(View itemView) {
             super(itemView);
             item = itemView;
+            itemView.setOnCreateContextMenuListener(this);
+        }
+
+        @Override
+        public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+            menu.add(0, 1, 0, "Delete");
         }
     }
 

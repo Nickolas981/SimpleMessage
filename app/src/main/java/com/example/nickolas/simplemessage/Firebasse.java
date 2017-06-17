@@ -64,9 +64,6 @@ public class Firebasse {
     }
 
     public static void setUser(User userr) {
-//        FirebaseDatabase database = FirebaseDatabase.getInstance();
-//        DatabaseReference myRef = database.getReference("main");
-//        myRef.child(MainActivity.idToken).setValue(user);
         user = userr;
         DatabaseReference myRef = mDatebase.getReference("main");
         myRef.child(uId).setValue(user);
@@ -153,10 +150,7 @@ public class Firebasse {
                             setuId();
                             Firebasse.setUser();
                             Firebasse.setuId();
-                            Login.sucses();
-//                    Firebasse.setUser();
-////                    getToken();
-////                    setUser();
+                            Login.success();
                         } else {
 
                         }
@@ -164,6 +158,17 @@ public class Firebasse {
                 });
     }
 
+    public static void registrate(final String email, final String name, final String pass){
+        Firebasse.getmAuth().createUserWithEmailAndPassword(email, pass).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if (task.isSuccessful()){
+                    Registration.setFields(email, name, pass);
+                } else {
+                }
+            }
+        });
+    }
 
     public static void login(final String email, String pass, final String name, final String photo) {
         mAuth.signInWithEmailAndPassword(email, pass)
@@ -178,6 +183,7 @@ public class Firebasse {
                                 uploadFile(photo);
                             }
                             Firebasse.setUser(new User(name, email));
+                            Login.success();
                         } else {
 
                         }

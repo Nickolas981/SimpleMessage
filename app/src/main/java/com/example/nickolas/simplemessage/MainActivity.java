@@ -2,9 +2,7 @@ package com.example.nickolas.simplemessage;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -14,14 +12,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
@@ -46,7 +40,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         bSend.setOnClickListener(this);
 
         messageList = (RecyclerView) findViewById(R.id.message_list);
-        messageList.setLayoutManager(new LinearLayoutManager(this));
+        messageList.setLayoutManager(new mManager(this));
         Firebasse.setmAuth();
 //        mAuth = FirebaseAuth.getInstance();
 
@@ -81,10 +75,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             Firebasse.setuId();
             Firebasse.setUser();
         }
-//        else if (Login.user == null) {
-//            Login.getToken();
-//            Login.setUser();
-//        }
     }
 
     @Override
@@ -103,24 +93,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-//    private void setListner() {
-//        mAuthListener = new FirebaseAuth.AuthStateListener() {
-//            @Override
-//            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-//                FirebaseUser user = firebaseAuth.getCurrentUser();
-//                if (user != null) {
-//                    Toast.makeText(MainActivity.this, "signed_in:", Toast.LENGTH_SHORT).show();
-////                    Login.getToken();
-////                    setDB();
-////                    showMessages();
-////                    Login.setUser();
-//                } else {
-////                    Toast.makeText(MainActivity.this, "signed_out", Toast.LENGTH_SHORT).show();
-////                    logIn();
-//                }
-//            }
-//        };
-//    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -128,7 +100,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             Firebasse.signOut();
             logIn();
             mAdapter = null;
-//            messageList.clearOldPos
         }
         return true;
     }
@@ -138,9 +109,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         startActivityForResult(login, 1);
     }
 
-//    void setDB() {
-//        mDatebase = FirebaseDatabase.getInstance();
-//    }
 
     @Override
     public void onStop() {
@@ -167,6 +135,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
 
+
     public void showMessages() {
         DatabaseReference ref = Firebasse.getmDatebase().getReference("messages");
 
@@ -188,7 +157,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
-
+                mAdapter.removeItem(dataSnapshot.getValue(MessageModel.class));
             }
 
             @Override
