@@ -6,7 +6,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -14,11 +13,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
-
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
-import com.google.firebase.database.FirebaseDatabase;
 
 import java.io.IOException;
 
@@ -123,7 +117,7 @@ public class Registration extends AppCompatActivity implements View.OnClickListe
     }
 
    static   void setFields(String email, String name, String pass){
-        Intent intent  = new Intent(activity, Login.class);
+        Intent intent  = new Intent(activity, Login1.class);
         intent.putExtra("email", email);
         intent.putExtra("name", name);
         intent.putExtra("pass", pass);

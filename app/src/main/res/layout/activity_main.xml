@@ -8,6 +8,13 @@
     android:background="#eceff1">
 
 
+    <FrameLayout
+        android:id="@+id/frame_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    </FrameLayout>
+
 
     <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"
