@@ -33,8 +33,6 @@ public class MessageModel {
     private String uid;
     private long timeMessage;
 
-
-
     public MessageModel() {
 
     }
@@ -42,13 +40,24 @@ public class MessageModel {
     public MessageModel(String email, String body) {
         this.email = email;
         this.body = body;
-        this.name = Login.user.name;
+
+        this.name = Firebasse.getUser().name;
         timeMessage = new Date().getTime();
-        uid = MainActivity.idToken;
+        uid = Firebasse.getuId();
     }
 
     @Override
     public String toString() {
         return email + ": " + body;
+    }
+
+
+    @Override
+    public boolean equals(Object obj) {
+        MessageModel m = (MessageModel) obj;
+
+        return m.name == name && m.email == m.email
+                &&m.body == body && uid.equals(m.uid)
+                &&m.timeMessage == timeMessage;
     }
 }

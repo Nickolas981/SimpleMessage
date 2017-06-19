@@ -1,5 +1,7 @@
 package com.example.nickolas.simplemessage;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -13,13 +15,8 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -28,15 +25,15 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
 
     EditText ETemail, ETpass;
     Button logIn, registr;
-    private StorageReference mStorageRef;
-    public static User user;
+    static Activity activity;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        activity = this;
         setContentView(R.layout.activity_login);
-
+        Firebasse.setContext(Login.this);
         ETemail = (EditText) findViewById(R.id.email);
         ETpass = (EditText) findViewById(R.id.pass);
         logIn = (Button) findViewById(R.id.log_in);
@@ -47,21 +44,6 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
 
     }
 
-    void setUser(User user) {
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference("main");
-        myRef.child(MainActivity.idToken).setValue(user);
-        Intent intent = new Intent(Login.this, MainActivity.class);
-        setResult(RESULT_OK, intent);
-        finish();
-    }
-
-    public static void getToken() {
-        FirebaseUser mUser = MainActivity.mAuth.getCurrentUser();
-        MainActivity.idToken = mUser.getUid();
-    }
-
-
     public void onClick(View v) {
         int id = v.getId();
         switch (id) {
@@ -69,11 +51,10 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                 registrate(ETemail.getText().toString(), ETpass.getText().toString());
                 break;
             case R.id.log_in:
-                signIn(ETemail.getText().toString(), ETpass.getText().toString());
+                Firebasse.login(ETemail.getText().toString(), ETpass.getText().toString());
                 break;
         }
     }
-
 
     public void registrate(final String email, final String pass) {
         Intent intent = new Intent(this, Registration.class);
@@ -90,79 +71,13 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
             pass = data.getStringExtra("pass");
             email = data.getStringExtra("email");
             photo = data.getStringExtra("photo");
-            signIn(email, pass, name, photo);
+            Firebasse.login(email, pass, name, photo);
         }
     }
 
-    public void uploadFile(String photo) {
-        Uri uri = Uri.parse(photo);
-
-        mStorageRef = FirebaseStorage.getInstance().getReferenceFromUrl("gs://simplemessage-abdee.appspot.com").child("avatars");
-
-        StorageReference imageRef = mStorageRef.child(MainActivity.idToken + ".jpg");
-
-        imageRef.putFile(uri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-                if (task.isSuccessful()) {
-//                    Toast.makeText(Login.this, "ok", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(Login.this, task.getException().toString(), Toast.LENGTH_SHORT).show();
-                    ETemail.setText(task.getException().toString());
-                    Log.d("Error", task.getException().toString());
-                }
-            }
-        });
-
-    }
-
-    public void signIn(final String email, String pass) {
-        MainActivity.mAuth.signInWithEmailAndPassword(email, pass).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                if (task.isSuccessful()) {
-                    getToken();
-                    setUser();
-                    Intent intent = new Intent(Login.this, MainActivity.class);
-                    setResult(RESULT_OK, intent);
-                    finish();
-                } else {
-                    Toast.makeText(Login.this, "Error" + task.getException(), Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-    }
-
-    public static void setUser() {
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("main").child(MainActivity.idToken);
-        ref.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                user = new User("1", "1");
-                user = dataSnapshot.getValue(User.class);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-    }
-
-    public void signIn(final String email, String pass, final String name, final String photo) {
-        MainActivity.mAuth.signInWithEmailAndPassword(email, pass).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                if (task.isSuccessful()) {
-                    getToken();
-                    if (!photo.equals("empty")) {
-                        uploadFile(photo);
-                    }
-                    setUser(new User(name, email));
-                } else {
-                    Toast.makeText(Login.this, "Error", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
+    public static void success() {
+        Intent intent = new Intent(activity, MainActivity.class);
+        activity.setResult(RESULT_OK, intent);
+        activity.finish();
     }
 }

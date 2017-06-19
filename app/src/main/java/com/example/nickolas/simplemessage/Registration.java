@@ -1,5 +1,6 @@
 package com.example.nickolas.simplemessage;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -27,10 +28,12 @@ public class Registration extends AppCompatActivity implements View.OnClickListe
     EditText name,email, pass;
     Button submit, cancel;
     private final int GALLERY_REQUEST = 1;
-    Uri URIphoto;
+    static Uri URIphoto;
+    private static Activity activity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        activity = this;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registration);
         getSupportActionBar().setTitle(getResources().getString(R.string.registration));
@@ -99,6 +102,11 @@ public class Registration extends AppCompatActivity implements View.OnClickListe
             photo.setImageBitmap(bitmap);
         }
     }
+    public static void success() {
+        Intent intent = new Intent(activity, MainActivity.class);
+        activity.setResult(RESULT_OK, intent);
+        activity.finish();
+    }
 
     private void setPhoto(){
         Intent galleryIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
@@ -111,20 +119,11 @@ public class Registration extends AppCompatActivity implements View.OnClickListe
         pass = this.pass.getText().toString();
         name = this.name.getText().toString();
 
-        MainActivity.mAuth.createUserWithEmailAndPassword(email, pass).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                if (task.isSuccessful()){
-                    setFields(email, name, pass);
-                } else {
-                    Toast.makeText(Registration.this, "Error" + task.getException(), Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
+        Firebasse.registrate(email, name, pass);
     }
 
-    void setFields(String email, String name, String pass){
-        Intent intent  = new Intent(this, Login.class);
+   static   void setFields(String email, String name, String pass){
+        Intent intent  = new Intent(activity, Login.class);
         intent.putExtra("email", email);
         intent.putExtra("name", name);
         intent.putExtra("pass", pass);
@@ -133,8 +132,8 @@ public class Registration extends AppCompatActivity implements View.OnClickListe
         } else {
             intent.putExtra("photo", "empty");
         }
-        setResult(RESULT_OK, intent);
-        finish();
+        activity.setResult(RESULT_OK, intent);
+        activity.finish();
     }
 
     private  boolean checkFields(){
