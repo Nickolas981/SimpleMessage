@@ -111,6 +111,9 @@ public class Firebasse {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 user = new User("1", "1");
                 user = dataSnapshot.getValue(User.class);
+                if (LoginFragment.loginListner != null){
+                    LoginFragment.loginListner.success();
+                }
             }
 
             @Override
@@ -149,7 +152,7 @@ public class Firebasse {
                             setuId();
                             Firebasse.setUser();
                             Firebasse.setuId();
-//                            Login1.success();
+
                         } else {
 
                         }
@@ -157,11 +160,11 @@ public class Firebasse {
                 });
     }
 
-    public static void registrate(final String email, final String name, final String pass){
+    public static void registrate(final String email, final String name, final String pass) {
         Firebasse.getmAuth().createUserWithEmailAndPassword(email, pass).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
-                if (task.isSuccessful()){
+                if (task.isSuccessful()) {
                     Registration.setFields(email, name, pass);
                 } else {
                 }
@@ -178,11 +181,11 @@ public class Firebasse {
                             setuId();
                             Firebasse.setUser();
                             Firebasse.setuId();
-                            if (!photo.equals("empty")){
+                            if (!photo.equals("empty")) {
                                 uploadFile(photo);
                             }
                             Firebasse.setUser(new User(name, email));
-                            Login1.success();
+//                            LoginFragment.loginListner.success();
                         } else {
 
                         }

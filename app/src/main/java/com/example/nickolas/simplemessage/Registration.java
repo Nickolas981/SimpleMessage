@@ -14,6 +14,8 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.r0adkll.slidr.Slidr;
+
 import java.io.IOException;
 
 public class Registration extends AppCompatActivity implements View.OnClickListener{
@@ -29,6 +31,7 @@ public class Registration extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         activity = this;
         super.onCreate(savedInstanceState);
+        Slidr.attach(this);
         setContentView(R.layout.activity_registration);
         getSupportActionBar().setTitle(getResources().getString(R.string.registration));
 
