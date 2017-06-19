@@ -1,6 +1,7 @@
 package com.example.nickolas.simplemessage;
 
 import android.content.Context;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.text.format.DateFormat;
 import android.view.ContextMenu;
@@ -68,7 +69,7 @@ public class CustomMessageAdapter extends RecyclerView.Adapter<CustomMessageAdap
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.name.setText(messageModel.get(position).getName());
         holder.body.setText(messageModel.get(position).getBody());
         holder.time.setText(DateFormat.format("dd-MM-yyyy (HH:mm:ss)", messageModel.get(position).getTimeMessage()));
@@ -76,6 +77,31 @@ public class CustomMessageAdapter extends RecyclerView.Adapter<CustomMessageAdap
 //                .load(FirebaseStorage.getInstance().getReferenceFromUrl("gs://simplemessage-abdee.appspot.com/avatars").child(messageModel.get(position).getUid() + ".jpg"))
 //                .into(holder.avatar);
         new DownloadImageTask(holder.avatar).downloadAvatar(messageModel.get(position).getUid());
+//        holder.itemView.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//
+//                //creating a popup menu
+//                PopupMenu popup = new PopupMenu(context, holder.itemView);
+//                //inflating menu from xml resource
+//                popup.inflate(R.menu.message);
+//                //adding click listener
+//                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+//                    @Override
+//                    public boolean onMenuItemClick(MenuItem item) {
+//                        switch (item.getItemId()) {
+//                            case R.id.delete:
+//                                //handle menu1 click
+//                                break;
+//                        }
+//                        return false;
+//                    }
+//                });
+//                //displaying the popup
+//                popup.show();
+//
+//            }
+//        });
     }
 
 
@@ -85,7 +111,7 @@ public class CustomMessageAdapter extends RecyclerView.Adapter<CustomMessageAdap
     }
 
 
-    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener {
+    public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView name, body, time;
         ImageView avatar;
         View item;
@@ -93,12 +119,6 @@ public class CustomMessageAdapter extends RecyclerView.Adapter<CustomMessageAdap
         public ViewHolder(View itemView) {
             super(itemView);
             item = itemView;
-            itemView.setOnCreateContextMenuListener(this);
-        }
-
-        @Override
-        public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-            menu.add(0, 1, 0, "Delete");
         }
     }
 

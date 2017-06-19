@@ -4,7 +4,6 @@ import android.content.Context;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -132,7 +131,7 @@ public class Firebasse {
             @Override
             public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
                 if (task.isSuccessful()) {
-//                    Toast.makeText(Login.this, "ok", Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(Login1.this, "ok", Toast.LENGTH_SHORT).show();
                 } else {
                     Log.d("Error", task.getException().toString());
                 }
@@ -150,7 +149,7 @@ public class Firebasse {
                             setuId();
                             Firebasse.setUser();
                             Firebasse.setuId();
-                            Login.success();
+//                            Login1.success();
                         } else {
 
                         }
@@ -183,7 +182,7 @@ public class Firebasse {
                                 uploadFile(photo);
                             }
                             Firebasse.setUser(new User(name, email));
-                            Login.success();
+                            Login1.success();
                         } else {
 
                         }
