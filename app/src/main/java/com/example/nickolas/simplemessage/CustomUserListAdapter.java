@@ -45,9 +45,12 @@ public class CustomUserListAdapter extends RecyclerView.Adapter<CustomUserListAd
         holder.item.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                new DialogListModel(MainActivity.activity);
+
                 Intent intent = new Intent(MainActivity.activity, Dialog.class);
                 intent.putExtra("id", userListModel.get(position).getId());
                 intent.putExtra("name", userListModel.get(position).getName());
+                intent.putExtra("email", userListModel.get(position).getEmail());
                 MainActivity.activity.startActivity(intent);
             }
         });

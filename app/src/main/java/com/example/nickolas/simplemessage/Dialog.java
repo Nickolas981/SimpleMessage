@@ -24,6 +24,7 @@ public class Dialog extends AppCompatActivity implements DialogModel.DialogModel
     RecyclerView messageList;
     CustomDialogAdapter mAdapter;
     DialogModel dialogModel;
+    String name, email;
 
 
     @Override
@@ -36,7 +37,9 @@ public class Dialog extends AppCompatActivity implements DialogModel.DialogModel
         messageList = (RecyclerView)  findViewById(R.id.message_list);
         Intent intent = getIntent();
         String id = intent.getStringExtra("id");
-        getSupportActionBar().setTitle(intent.getStringExtra("name"));
+        name = intent.getStringExtra("name");
+        email = intent.getStringExtra("email");
+        getSupportActionBar().setTitle(name);
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         send.setOnClickListener(this);
@@ -44,7 +47,6 @@ public class Dialog extends AppCompatActivity implements DialogModel.DialogModel
         dialogModel = new DialogModel(id, this);
         mAdapter = new CustomDialogAdapter(dialogModel);
         messageList.setAdapter(mAdapter);
-
     }
 
     @Override
@@ -78,16 +80,28 @@ public class Dialog extends AppCompatActivity implements DialogModel.DialogModel
     }
 
     private void sendMessage() {
-        MessageModel messageModel = new MessageModel(Firebasse.getCurrentUser().getEmail(), editText.getText().toString());
+        if (dialogModel.messages.size() == 0){
+            DatabaseReference reference = Firebasse.getmDatebase().getReference();
+            reference = reference.child("dialogs").child("users").child(dialogModel.id);
+            reference.child(dialogModel.me).setValue(Firebasse.getCurrentUser().getEmail() + "/" + Firebasse.getUser().getName());
+            reference.child(dialogModel.you).setValue(email + "/" + name);
+//            reference.child(dialogModel.you).setValue(true);
+
+        }
+        final MessageModel messageModel = new MessageModel(Firebasse.getCurrentUser().getEmail(), editText.getText().toString());
         DatabaseReference myRef = Firebasse.getmDatebase().getReference();
         editText.setText("");
 
-        myRef = myRef.child("dialogs").child(dialogModel.id).push();
+        myRef = myRef.child("dialogs").child("dialogs").child(dialogModel.id).push();
         myRef.setValue(messageModel).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (!task.isSuccessful()){
                     Toast.makeText(MainActivity.activity, task.getException().toString(), Toast.LENGTH_LONG).show();
+                }else {
+                    DatabaseReference reference = Firebasse.getmDatebase().getReference();
+                    reference = reference.child("dialogs").child("users").child(dialogModel.id);
+                    reference.child("lastMessage").setValue(messageModel);
                 }
             }
         });
