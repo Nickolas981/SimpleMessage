@@ -14,11 +14,9 @@ import java.util.ArrayList;
 public class CustomMessageAdapter extends RecyclerView.Adapter<CustomMessageAdapter.ViewHolder> {
 
     private ArrayList<MessageModel> messageModel;
-    private Context context;
 
     public CustomMessageAdapter(ArrayList<MessageModel> messageModel, Context context) {
         this.messageModel = messageModel;
-        this.context = context;
     }
 
     public void addItems(ArrayList<MessageModel> message) {
@@ -53,7 +51,7 @@ public class CustomMessageAdapter extends RecyclerView.Adapter<CustomMessageAdap
 
         ViewHolder viewHolder = new ViewHolder(v);
 
-        viewHolder.avatar = (ImageView) v.findViewById(R.id.sender_avatar);
+//        viewHolder.avatar = (ImageView) v.findViewById(R.id.sender_avatar);
         viewHolder.body = (TextView) v.findViewById(R.id.message);
         viewHolder.time = (TextView) v.findViewById(R.id.message_time);
         viewHolder.name = (TextView) v.findViewById(R.id.sender_name);
@@ -67,7 +65,7 @@ public class CustomMessageAdapter extends RecyclerView.Adapter<CustomMessageAdap
         holder.body.setText(messageModel.get(position).getBody());
         holder.time.setText(DateFormat.format("dd-MM-yyyy (HH:mm:ss)", messageModel.get(position).getTimeMessage()));
 
-        new DownloadImageTask(holder.avatar).downloadAvatar(messageModel.get(position).getUid());
+//        new DownloadImageTask(holder.avatar).downloadAvatar(messageModel.get(position).getUid());
 
     }
 

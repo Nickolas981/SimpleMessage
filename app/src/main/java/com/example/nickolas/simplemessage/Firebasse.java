@@ -109,7 +109,7 @@ public class Firebasse {
         ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                user = new User("1", "1");
+                user = new User("1", "1", "1");
                 user = dataSnapshot.getValue(User.class);
                 if (LoginFragment.loginListner != null){
                     LoginFragment.loginListner.success();
@@ -184,7 +184,7 @@ public class Firebasse {
                             if (!photo.equals("empty")) {
                                 uploadFile(photo);
                             }
-                            Firebasse.setUser(new User(name, email));
+                            Firebasse.setUser(new User(name, email, getuId()));
 //                            LoginFragment.loginListner.success();
                         } else {
 

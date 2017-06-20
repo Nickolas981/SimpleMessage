@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView android:layout_height="80dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_marginBottom="5dp"
+    android:layout_marginEnd="10dp"
+    android:layout_marginStart="10dp"
+    android:layout_marginTop="5dp"
+    android:layout_width="match_parent"
+    app:cardCornerRadius="2dp"
+    app:cardElevation="5dp"
+    android:focusable="true"
+    android:clickable="true"
+    android:foreground="?android:attr/selectableItemBackground"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <LinearLayout
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:orientation="horizontal">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/user_photo"
+            android:layout_gravity="center"
+            android:layout_height="50dp"
+            android:layout_marginEnd="15dp"
+            android:layout_marginStart="15dp"
+            android:layout_width="50dp" />
+
+        <LinearLayout
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:gravity="center_vertical"
+                android:id="@+id/user_name"
+                android:layout_height="0dp"
+                android:layout_weight="2"
+                android:layout_width="match_parent"
+                android:text="Микола Гуменюк"
+                android:textSize="24sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/user_email"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:text="kolin98111@gmail.com" />
+        </LinearLayout>
+    </LinearLayout>
+</android.support.v7.widget.CardView>

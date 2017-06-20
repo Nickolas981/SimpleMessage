@@ -2,6 +2,7 @@ package com.example.nickolas.simplemessage;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -22,6 +23,11 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
     LoginFragment loginFragment;
     private FragmentTransaction fragT;
     static Menu menu;
+    Fragment selectedFrag;
+    private final String LOGIN_TAG = "LOGIN",
+                        REG_TAG = "REG",
+                        MESS_TAG = "MESS",
+                        USER_LIST_TAG = "USER_LIST";
 
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,14 +40,8 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
         Firebasse.setmAuthListner();
         Firebasse.setDB();
 
-
     }
 
-    void out() {
-        fragT = getSupportFragmentManager().beginTransaction();
-        fragT.replace(R.id.frame_view, new LoginFragment());
-        fragT.commit();
-    }
 
     void test() {
         DatabaseReference mRef = Firebasse.getmDatebase().getReference().child("main");
@@ -76,17 +76,23 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
     protected void onResume() {
         super.onResume();
         if (Firebasse.getCurrentUser() == null) {
-            out();
+            replaceFragmentWithAnimation(new LoginFragment(), LOGIN_TAG);
         } else if (Firebasse.getUser() == null) {
             Firebasse.setuId();
             Firebasse.setUser();
-            fragT = getSupportFragmentManager().beginTransaction();
-            fragT.replace(R.id.frame_view, new MessageFragment());
-            fragT.commit();
+            replaceFragmentWithAnimation(new UserList(), USER_LIST_TAG);
         } else {
-            fragT = getSupportFragmentManager().beginTransaction();
-            fragT.replace(R.id.frame_view, new MessageFragment());
-            fragT.commit();
+            replaceFragmentWithAnimation(new UserList(), USER_LIST_TAG);
+        }
+    }
+
+    public void replaceFragmentWithAnimation(Fragment fragment, String tag){
+        selectedFrag = getSupportFragmentManager().findFragmentByTag(tag);
+        if (selectedFrag == null || !selectedFrag.isVisible()){
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.setCustomAnimations(R.anim.enter_from_left, R.anim.exit_to_right, R.anim.enter_from_right, R.anim.exit_to_left);
+            transaction.replace(R.id.frame_view, fragment, tag);
+            transaction.commit();
         }
     }
 
@@ -94,7 +100,7 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_exit) {
             Firebasse.signOut();
-            out();
+            replaceFragmentWithAnimation(new LoginFragment(), LOGIN_TAG);
         }
         return true;
     }
@@ -113,8 +119,6 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
     @Override
     public void success() {
         menu.findItem(R.id.action_exit).setVisible(true);
-        fragT = getSupportFragmentManager().beginTransaction();
-        fragT.replace(R.id.frame_view, new MessageFragment());
-        fragT.commit();
+        replaceFragmentWithAnimation(new UserList(), USER_LIST_TAG);
     }
 }
