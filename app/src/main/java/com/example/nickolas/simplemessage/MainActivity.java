@@ -17,7 +17,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
 
-public class MainActivity extends AppCompatActivity implements LoginFragment.LoginListner {
+public class MainActivity extends AppCompatActivity implements LoginFragment.LoginListner, DialogListModel.DialogListListner {
 
     public static Activity activity;
     LoginFragment loginFragment;
@@ -27,7 +27,8 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
     private final String LOGIN_TAG = "LOGIN",
                         REG_TAG = "REG",
                         MESS_TAG = "MESS",
-                        USER_LIST_TAG = "USER_LIST";
+                        USER_LIST_TAG = "USER_LIST",
+                        DIALOG_LIST_TAG = "DIALOG_LIST_TAG";
 
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +40,10 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
 
         Firebasse.setmAuthListner();
         Firebasse.setDB();
+
+        if  (Firebasse.getCurrentUser() != null && Firebasse.getUser() == null){
+            Firebasse.setUser();
+        }
 
 
     }
@@ -69,6 +74,7 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
         MainActivity.menu = menu;
         if (Firebasse.getCurrentUser() == null) {
             menu.findItem(R.id.action_exit).setVisible(false);
+            menu.findItem(R.id.action_users).setVisible(false);
         }
         return true;
     }
@@ -81,9 +87,9 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
         } else if (Firebasse.getUser() == null) {
             Firebasse.setuId();
             Firebasse.setUser();
-            replaceFragmentWithAnimation(new UserList(), USER_LIST_TAG);
+            replaceFragmentWithAnimation(new DialogList(), DIALOG_LIST_TAG);
         } else {
-            replaceFragmentWithAnimation(new UserList(), USER_LIST_TAG);
+            replaceFragmentWithAnimation(new DialogList(), DIALOG_LIST_TAG);
         }
     }
 
@@ -92,6 +98,9 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
         if (selectedFrag == null || !selectedFrag.isVisible()){
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.setCustomAnimations(R.anim.enter_from_left, R.anim.exit_to_right, R.anim.enter_from_right, R.anim.exit_to_left);
+            if (tag == USER_LIST_TAG){
+                transaction.addToBackStack(tag);
+            }
             transaction.replace(R.id.frame_view, fragment, tag);
             transaction.commit();
         }
@@ -102,6 +111,8 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
         if (item.getItemId() == R.id.action_exit) {
             Firebasse.signOut();
             replaceFragmentWithAnimation(new LoginFragment(), LOGIN_TAG);
+        }else if (item.getItemId() == R.id.action_users){
+            replaceFragmentWithAnimation(new UserList(), USER_LIST_TAG);
         }
         return true;
     }
@@ -120,6 +131,11 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
     @Override
     public void success() {
         menu.findItem(R.id.action_exit).setVisible(true);
-        replaceFragmentWithAnimation(new UserList(), USER_LIST_TAG);
+        replaceFragmentWithAnimation(new DialogList(), DIALOG_LIST_TAG);
+    }
+
+    @Override
+    public void add() {
+
     }
 }

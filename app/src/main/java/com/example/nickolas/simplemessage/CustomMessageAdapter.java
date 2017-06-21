@@ -76,7 +76,7 @@ public class CustomMessageAdapter extends RecyclerView.Adapter<CustomMessageAdap
     }
 
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    protected static class ViewHolder extends RecyclerView.ViewHolder {
         TextView name, body, time;
         ImageView avatar;
         View item;

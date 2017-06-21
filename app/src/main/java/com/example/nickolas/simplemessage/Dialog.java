@@ -38,7 +38,7 @@ public class Dialog extends AppCompatActivity implements DialogModel.DialogModel
         Intent intent = getIntent();
         String id = intent.getStringExtra("id");
         name = intent.getStringExtra("name");
-        email = intent.getStringExtra("email");
+//        email = intent.getStringExtra("email");
         getSupportActionBar().setTitle(name);
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -83,8 +83,8 @@ public class Dialog extends AppCompatActivity implements DialogModel.DialogModel
         if (dialogModel.messages.size() == 0){
             DatabaseReference reference = Firebasse.getmDatebase().getReference();
             reference = reference.child("dialogs").child("users").child(dialogModel.id);
-            reference.child(dialogModel.me).setValue(Firebasse.getCurrentUser().getEmail() + "/" + Firebasse.getUser().getName());
-            reference.child(dialogModel.you).setValue(email + "/" + name);
+            reference.child(dialogModel.me).setValue(Firebasse.getUser().getName());
+            reference.child(dialogModel.you).setValue(name);
 //            reference.child(dialogModel.you).setValue(true);
 
         }

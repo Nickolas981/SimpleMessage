@@ -38,14 +38,14 @@ public class CustomUserListAdapter extends RecyclerView.Adapter<CustomUserListAd
 
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
-        new DownloadImageTask(holder.avatar).downloadAvatar(userListModel.get(position).id);
+        new DownloadImageTask(holder.avatar, userListModel.get(position).getId()).downloadAvatar();
         holder.email.setText(userListModel.get(position).email);
         holder.name.setText(userListModel.get(position).name);
 
         holder.item.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new DialogListModel(MainActivity.activity);
+//                new DialogListModel(MainActivity.activity);
 
                 Intent intent = new Intent(MainActivity.activity, Dialog.class);
                 intent.putExtra("id", userListModel.get(position).getId());
@@ -62,7 +62,7 @@ public class CustomUserListAdapter extends RecyclerView.Adapter<CustomUserListAd
         return userListModel.getCount();
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    protected static class ViewHolder extends RecyclerView.ViewHolder {
         TextView name, email;
         ImageView avatar;
         View item;

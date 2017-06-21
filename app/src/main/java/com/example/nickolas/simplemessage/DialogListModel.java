@@ -1,7 +1,5 @@
 package com.example.nickolas.simplemessage;
 
-import android.content.Context;
-
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -10,32 +8,42 @@ import com.google.firebase.database.Query;
 
 import java.util.ArrayList;
 
-/**
- * Created by Nickolas on 20.06.2017.
- */
+
 
 public class DialogListModel {
 
-    ArrayList<Dialog1> messages;
-    DialogModel.DialogModelListner listner;
+    private ArrayList<Dialog> dialogs;
+    private DialogListListner listner;
+    private boolean suc;
 
-    public DialogListModel(Context context) {
+    public DialogListModel(DialogList context) {
+        dialogs = new ArrayList<>();
+
+        listner = (DialogListListner) context;
+        Firebasse.setUser(this);
+    }
+
+    public void setDialogs(){
         DatabaseReference ref = Firebasse.getmDatebase().getReference();
-        final Dialog1[] d = new Dialog1[1];
-        Query q = ref.child("dialogs").child("users").orderByChild(Firebasse.getuId()).equalTo(Firebasse.getUser().getEmail() + "/" + Firebasse.getUser().getName());
+        final Dialog[] d = new Dialog[1];
+        Query q = ref.child("dialogs").child("users").orderByChild(Firebasse.getuId()).equalTo(Firebasse.getUser().getName());
 
         q.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                d[0] = new Dialog1();
+                d[0] = new Dialog();
                 d[0].key = dataSnapshot.getKey();
                 d[0].last = dataSnapshot.child("lastMessage").getValue(MessageModel.class);
                 d[0].photo = d[0].key.replace(Firebasse.getuId(), "");
-                String[] nameEmail = dataSnapshot.child(d[0].photo).getValue(String.class).split("/");
-                d[0].name = nameEmail[1];
-                d[0].email = nameEmail[0];
-                messages.add(d[0]);
-
+                d[0].name =  dataSnapshot.child(d[0].photo).getValue(String.class);
+//                d[0].name = nameEmail[1];
+//                d[0].email = nameEmail[0];
+                if (!suc){
+                    suc = true;
+                    listner.success();
+                }
+                dialogs.add(d[0]);
+                listner.add();
             }
 
             @Override
@@ -60,17 +68,25 @@ public class DialogListModel {
         });
     }
 
+    public Dialog get(int i){
+        return dialogs.get(i);
+    }
 
-    class Dialog1 {
+    public int getSize(){
+        return dialogs.size();
+    }
+
+    class Dialog {
         String key;
         MessageModel last;
         String name;
-        String email;
+//        String email;
         String photo;
     }
 
     interface DialogListListner {
         void add();
+        void success();
     }
 
 

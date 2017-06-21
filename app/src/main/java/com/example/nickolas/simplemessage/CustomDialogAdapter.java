@@ -66,7 +66,7 @@ public class CustomDialogAdapter extends RecyclerView.Adapter<CustomDialogAdapte
         return dialogModel.getSize();
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    protected static class ViewHolder extends RecyclerView.ViewHolder {
         TextView name, body, time;
         View item;
 

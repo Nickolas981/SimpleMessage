@@ -1,6 +1,5 @@
 package com.example.nickolas.simplemessage;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -8,14 +7,11 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.ImageView;
 
-import com.bumptech.glide.Glide;
-import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.io.InputStream;
-import java.net.URI;
 import java.util.HashMap;
 
 //class DownloadImageTask extends AsyncTask<Uri, Void, Bitmap> {
@@ -78,28 +74,34 @@ import java.util.HashMap;
 //}
 class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
     ImageView bmImage;
+    String id;
 
     private static HashMap<String, Bitmap> photoCash = new HashMap<>();
     private static StorageReference mRef;
 
-    public DownloadImageTask(ImageView bmImage) {
+    public DownloadImageTask(ImageView bmImage, String id) {
         this.bmImage = bmImage;
+        this.id = id;
     }
 
 
-    public void downloadAvatar(String Uid){
-        if (mRef == null){
+    public void downloadAvatar() {
+        if (mRef == null) {
             mRef = FirebaseStorage.getInstance().getReferenceFromUrl("gs://simplemessage-abdee.appspot.com/avatars");
         }
-        mRef.child(Uid + ".jpg").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-            @Override
-            public void onSuccess(Uri uri) {
-                ex(uri.toString());
-            }
-        });
+        if (photoCash.containsKey(id)) {
+            bmImage.setImageBitmap(photoCash.get(id));
+        } else {
+            mRef.child(id + ".jpg").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                @Override
+                public void onSuccess(Uri uri) {
+                    ex(uri.toString());
+                }
+            });
+        }
     }
 
-    private void ex(String url){
+    private void ex(String url) {
         this.execute(url);
     }
 
@@ -113,18 +115,15 @@ class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
         String urldisplay = urls[0];
         Bitmap mIcon11 = null;
 
-        if (photoCash.containsKey(urldisplay)){
-            mIcon11 = photoCash.get(urldisplay);
-        } else {
-            try {
-                InputStream in = new java.net.URL(urldisplay).openStream();
-                mIcon11 = BitmapFactory.decodeStream(in);
-                photoCash.put(urldisplay, mIcon11);
-            } catch (Exception e) {
-                Log.e("Error", e.getMessage());
-                e.printStackTrace();
-            }
+        try {
+            InputStream in = new java.net.URL(urldisplay).openStream();
+            mIcon11 = BitmapFactory.decodeStream(in);
+            photoCash.put(id, mIcon11);
+        } catch (Exception e) {
+            Log.e("Error", e.getMessage());
+            e.printStackTrace();
         }
+
         return mIcon11;
     }
 

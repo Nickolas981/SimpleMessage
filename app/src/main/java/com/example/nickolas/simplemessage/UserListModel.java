@@ -16,6 +16,19 @@ public class UserListModel {
     public UserListModel(UserList userList) {
         users = new ArrayList<>();
         userListModelListner = (UserListModelListner) userList;
+        Firebasse.setUser(this);
+    }
+
+
+    public int getCount() {
+        return users.size();
+    }
+
+    public User get(int i) {
+        return users.get(i);
+    }
+
+    public void setUsers() {
         DatabaseReference reference = Firebasse.getmDatebase().getReference().child("main");
         reference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -32,15 +45,6 @@ public class UserListModel {
 
             }
         });
-    }
-
-
-    public int getCount() {
-        return users.size();
-    }
-
-    public User get(int i) {
-        return users.get(i);
     }
 
     public interface UserListModelListner {

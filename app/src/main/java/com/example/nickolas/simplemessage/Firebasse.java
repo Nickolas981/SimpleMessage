@@ -111,8 +111,51 @@ public class Firebasse {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 user = new User("1", "1", "1");
                 user = dataSnapshot.getValue(User.class);
-                if (LoginFragment.loginListner != null){
+                if (LoginFragment.loginListner != null) {
                     LoginFragment.loginListner.success();
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public static void setUser(final DialogListModel dialogListModel) {
+        DatabaseReference ref = mDatebase.getReference("main").child(uId);
+        ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                user = new User("1", "1", "1");
+                user = dataSnapshot.getValue(User.class);
+                if (LoginFragment.loginListner != null) {
+                    LoginFragment.loginListner.success();
+                }
+                if (dialogListModel != null){
+                    dialogListModel.setDialogs();
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+    public static void setUser(final UserListModel dialogListModel) {
+        DatabaseReference ref = mDatebase.getReference("main").child(uId);
+        ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                user = new User("1", "1", "1");
+                user = dataSnapshot.getValue(User.class);
+                if (LoginFragment.loginListner != null) {
+                    LoginFragment.loginListner.success();
+                }
+                if (dialogListModel != null){
+                    dialogListModel.setUsers();
                 }
             }
 
