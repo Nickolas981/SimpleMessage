@@ -48,7 +48,6 @@ import java.util.HashMap;
 //
 //    @Override
 //    protected void onPreExecute() {
-//        // TODO Auto-generated method stub
 //        super.onPreExecute();
 //    }
 //
@@ -107,7 +106,6 @@ class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
 
     @Override
     protected void onPreExecute() {
-        // TODO Auto-generated method stub
         super.onPreExecute();
     }
 
