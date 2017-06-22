@@ -59,4 +59,15 @@ public class DialogList extends Fragment implements DialogListModel.DialogListLi
         progressBar.setVisibility(View.GONE);
         dialogList.setVisibility(View.VISIBLE);
     }
+
+    @Override
+    public void changed(MessageModel messageModel, String name, String photo) {
+
+    }
+
+    @Override
+    public void changedView(int i) {
+        mAdapter.change(i);
+    }
+
 }

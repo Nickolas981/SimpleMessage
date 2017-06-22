@@ -4,7 +4,7 @@ import java.util.Date;
 
 
 
-public class MessageModel {
+public class  MessageModel {
 
     public String getEmail() {
         return email;

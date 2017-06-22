@@ -31,17 +31,21 @@ public class CustomDialogListAdapter extends RecyclerView.Adapter<CustomDialogLi
 //            return 1;
 //        }
 //        return 0;
-        return you.equals(me)? 1:0;
+        return you.equals(me) ? 1 : 0;
     }
 
-    void add(){
+    void add() {
         notifyItemInserted(dialogs.getSize() - 1);
+    }
+
+    void change(int i) {
+        notifyItemChanged(i);
     }
 
     @Override
     public CustomDialogListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
-        View v  = LayoutInflater.from(parent.getContext()).inflate(R.layout.custom_dialog_list_element_view, parent, false);
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.custom_dialog_list_element_view, parent, false);
 
         ViewHolder vh = new ViewHolder(v);
 
@@ -49,7 +53,7 @@ public class CustomDialogListAdapter extends RecyclerView.Adapter<CustomDialogLi
         vh.name = (TextView) v.findViewById(R.id.user_name);
         vh.lastMessageBody = (TextView) v.findViewById(R.id.last_message);
         vh.lastMessageContainer = v.findViewById(R.id.last_message_container);
-        vh.lastMessageTime  = (TextView) v.findViewById(R.id.last_message_time);
+        vh.lastMessageTime = (TextView) v.findViewById(R.id.last_message_time);
         vh.myAvatar = (ImageView) v.findViewById(R.id.my_avatar);
 
 

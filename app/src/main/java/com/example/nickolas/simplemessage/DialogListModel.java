@@ -15,12 +15,21 @@ public class DialogListModel {
     private ArrayList<Dialog> dialogs;
     private DialogListListner listner;
     private boolean suc;
+    private int parent;
 
     public DialogListModel(DialogList context) {
         dialogs = new ArrayList<>();
 
         listner = (DialogListListner) context;
         Firebasse.setUser(this);
+        parent = 0;
+    }
+    public DialogListModel(MessageService context) {
+        dialogs = new ArrayList<>();
+
+        listner = (DialogListListner) context;
+        Firebasse.setUser(this);
+        parent = 1;
     }
 
     public void setDialogs(){
@@ -36,8 +45,6 @@ public class DialogListModel {
                 d[0].last = dataSnapshot.child("lastMessage").getValue(MessageModel.class);
                 d[0].photo = d[0].key.replace(Firebasse.getuId(), "");
                 d[0].name =  dataSnapshot.child(d[0].photo).getValue(String.class);
-//                d[0].name = nameEmail[1];
-//                d[0].email = nameEmail[0];
                 if (!suc){
                     suc = true;
                     listner.success();
@@ -48,7 +55,16 @@ public class DialogListModel {
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
+                MessageModel m = dataSnapshot.child("lastMessage").getValue(MessageModel.class);
+                if (m.getUid() != Firebasse.getCurrentUser().getUid() && parent == 1){
+                    String photo = dataSnapshot.getKey().replace(Firebasse.getuId(), "");
+                    String name = dataSnapshot.child(photo).getValue(String.class);
+                    listner.changed(m, name, photo);
+                } else {
+                    int i =  getByKey(dataSnapshot.getKey());
+                    dialogs.get(i).last = m;
+                    listner.changedView(i);
+                }
             }
 
             @Override
@@ -84,9 +100,19 @@ public class DialogListModel {
         String photo;
     }
 
+    public int getByKey(String key){
+        for (int i = 0; i < dialogs.size(); i++) {
+            if(dialogs.get(i).key.equals(key))
+                return i;
+        }
+        return -1;
+    }
+
     interface DialogListListner {
         void add();
         void success();
+        void changed(MessageModel messageModel,  String name, String photo);
+        void changedView(int i);
     }
 
 
