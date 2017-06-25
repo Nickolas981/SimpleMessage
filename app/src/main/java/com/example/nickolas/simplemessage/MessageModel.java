@@ -28,6 +28,7 @@ public class  MessageModel {
     private String email;
     private String body;
     private String name;
+    private String key;
 
 
     private String uid;
@@ -59,5 +60,13 @@ public class  MessageModel {
         return m.name == name && m.email == m.email
                 &&m.body == body && uid.equals(m.uid)
                 &&m.timeMessage == timeMessage;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
     }
 }

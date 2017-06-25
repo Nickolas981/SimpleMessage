@@ -37,7 +37,10 @@ public class MessageService extends IntentService implements DialogListModel.Dia
         NotificationManager manager;
         Notification myNotication;
         manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 1, intent, 0);
+        Intent mIntent = new Intent(this, Dialog.class);
+        mIntent.putExtra("id", photo);
+        mIntent.putExtra("name", name);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 1, mIntent, 0);
 
         Notification.Builder builder = new Notification.Builder(this);
 
@@ -45,6 +48,7 @@ public class MessageService extends IntentService implements DialogListModel.Dia
         builder.setTicker("new message");
         builder.setContentTitle(name);
         builder.setContentText(messageModel.getBody());
+//        builder.setLargeIcon(new DownloadImageTask(messageModel.getUid()).getIconForNotifications());
         builder.setSmallIcon(R.drawable.common_google_signin_btn_icon_dark);
         builder.setContentIntent(pendingIntent);
         builder.setOngoing(false);

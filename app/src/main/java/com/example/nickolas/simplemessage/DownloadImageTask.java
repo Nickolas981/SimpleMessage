@@ -83,6 +83,20 @@ class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
         this.id = id;
     }
 
+    public DownloadImageTask( String id) {
+        this.id = id;
+    }
+
+    public Bitmap getIconForNotifications(){
+        if (mRef == null) {
+            mRef = FirebaseStorage.getInstance().getReferenceFromUrl("gs://simplemessage-abdee.appspot.com/avatars");
+        }
+        if (photoCash.containsKey(id)) {
+            return photoCash.get(id);
+        }
+        return null;
+    }
+
 
     public void downloadAvatar() {
         if (mRef == null) {

@@ -33,7 +33,10 @@ public class DialogModel {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 if (!dataSnapshot.getKey().equals(me) && !dataSnapshot.getKey().equals(you)) {
-                    messages.add(dataSnapshot.getValue(MessageModel.class));
+                    MessageModel m = dataSnapshot.getValue(MessageModel.class);
+                    m.setKey(dataSnapshot.getKey());
+                    messages.add(m);
+//                    messages.add(dataSnapshot.getValue(MessageModel.class).setKey(dataSnapshot.getKey()));
                     listner.add();
                 }
 
@@ -66,23 +69,6 @@ public class DialogModel {
 
             }
         });
-
-        DatabaseReference r = Firebasse.getmDatebase().getReference();
-        Query asd = r.child("dialogs").orderByChild("gaJYLzfscxPAUXmn1rm6pSCUDHY2").equalTo(1);
-
-        asd.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.getValue() != null)
-                    Toast.makeText(MainActivity.activity, "asdasdasd", Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-
     }
 
     public int getSize() {
