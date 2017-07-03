@@ -75,8 +75,8 @@ class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
     ImageView bmImage;
     String id;
 
-    private static HashMap<String, Bitmap> photoCash = new HashMap<>();
-    private static StorageReference mRef;
+    public static HashMap<String, Bitmap> photoCash = new HashMap<>();
+    public static StorageReference mRef = FirebaseStorage.getInstance().getReferenceFromUrl("gs://simplemessage-abdee.appspot.com/avatars");
 
     public DownloadImageTask(ImageView bmImage, String id) {
         this.bmImage = bmImage;
@@ -88,9 +88,9 @@ class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
     }
 
     public Bitmap getIconForNotifications(){
-        if (mRef == null) {
-            mRef = FirebaseStorage.getInstance().getReferenceFromUrl("gs://simplemessage-abdee.appspot.com/avatars");
-        }
+//        if (mRef == null) {
+//            mRef = FirebaseStorage.getInstance().getReferenceFromUrl("gs://simplemessage-abdee.appspot.com/avatars");
+//        }
         if (photoCash.containsKey(id)) {
             return photoCash.get(id);
         }
@@ -99,9 +99,9 @@ class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
 
 
     public void downloadAvatar() {
-        if (mRef == null) {
-            mRef = FirebaseStorage.getInstance().getReferenceFromUrl("gs://simplemessage-abdee.appspot.com/avatars");
-        }
+//        if (mRef == null) {
+//            mRef = FirebaseStorage.getInstance().getReferenceFromUrl("gs://simplemessage-abdee.appspot.com/avatars");
+//        }
         if (photoCash.containsKey(id)) {
             bmImage.setImageBitmap(photoCash.get(id));
         } else {

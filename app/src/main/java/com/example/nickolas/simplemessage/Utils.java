@@ -1,16 +1,29 @@
 package com.example.nickolas.simplemessage;
 
 import android.app.ActivityManager;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.provider.MediaStore;
 
-import java.io.ByteArrayOutputStream;
-import java.util.ArrayList;
-import java.util.Stack;
+import com.google.android.gms.tasks.OnSuccessListener;
 
-import android.util.Base64;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
+
+import static android.content.Context.DOWNLOAD_SERVICE;
+import static android.content.Context.NOTIFICATION_SERVICE;
 
 /**
  * Created by Nickolas on 14.06.2017.
@@ -43,30 +56,97 @@ public class Utils {
         return false;
     }
 
+    public static class sendNotification extends AsyncTask<String, Void, Bitmap> {
 
-//    public static String encode(String s, String key) {
-//        return base64Encode(xorWithKey(s.getBytes(), key.getBytes()));
-//    }
-//
-//    private static byte[] xorWithKey(byte[] a, byte[] key) {
-//        byte[] out = new byte[a.length];
-//        for (int i = 0; i < a.length; i++) {
-//            out[i] = (byte) (a[i] ^ key[i%key.length]);
-//        }
-//        return out;
-//    }
-//
-//    private static String base64Encode(byte[] bytes) {
-//        String res = Base64.encodeToString(bytes,Base64.DEFAULT);
-//        res = res.replaceAll("\\s", "");
-//        return res;
-//    }
+        Context ctx;
+        String message, photo, name;
+        URL url;
 
-    public static String generateDialogID(String a, String b){
-        if (a.compareTo(b) > 0){
-            return a+b;
-        }else{
-            return b+a;
+        public sendNotification(Context context) {
+            super();
+            this.ctx = context;
+        }
+
+        public void send(String name,String photo,String message){
+            this.name = name;
+            this.photo = photo;
+            this.message = message;
+            if (DownloadImageTask.photoCash.containsKey(this.photo)){
+                fin(DownloadImageTask.photoCash.get(photo));
+            }else{
+                DownloadImageTask.mRef.child(photo + ".jpg").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        execute(uri.toString());
+                    }
+                });
+            }
+        }
+
+        @Override
+        protected Bitmap doInBackground(String... params) {
+
+            InputStream in;
+            try {
+
+                URL url = new URL(params[0]);
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.setDoInput(true);
+                connection.connect();
+                in = connection.getInputStream();
+                Bitmap myBitmap = BitmapFactory.decodeStream(in);
+                return myBitmap;
+
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        private void fin(Bitmap bitmap){
+            try {
+                NotificationManager manager;
+                Notification myNotication;
+                manager = (NotificationManager) ctx.getSystemService(NOTIFICATION_SERVICE);
+                Intent mIntent = new Intent(ctx, Dialog.class);
+                mIntent.putExtra("id", photo);
+                mIntent.putExtra("name", name);
+                PendingIntent pendingIntent = PendingIntent.getActivity(ctx, 1, mIntent, 0);
+
+                Notification.Builder builder = new Notification.Builder(ctx);
+
+                builder.setAutoCancel(true);
+                builder.setTicker("New message");
+                builder.setContentTitle(name);
+                builder.setContentText(message);
+                builder.setLargeIcon(bitmap);
+                builder.setContentIntent(pendingIntent);
+                builder.setOngoing(false);
+                builder.setNumber(100);
+                builder.setDefaults(Notification.DEFAULT_VIBRATE);
+                builder.build();
+
+                myNotication = builder.getNotification();
+                manager.notify(11, myNotication);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        @Override
+        protected void onPostExecute(Bitmap result) {
+            super.onPostExecute(result);
+            fin(result);
+        }
+    }
+
+    public static String generateDialogID(String a, String b) {
+        if (a.compareTo(b) > 0) {
+            return a + b;
+        } else {
+            return b + a;
         }
     }
 

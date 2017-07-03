@@ -58,6 +58,8 @@ public class MessageService extends IntentService implements DialogListModel.Dia
 
         myNotication = builder.getNotification();
         manager.notify(11, myNotication);
+
+//        new Utils.sendNotification(this).send(name, photo, messageModel.getBody());
     }
 
     @Override

@@ -67,6 +67,7 @@ public class CustomDialogAdapter extends RecyclerView.Adapter<CustomDialogAdapte
         holder.time.setText(DateFormat.format("dd-MM-yyyy (HH:mm:ss)", dialogModel.get(position).getTimeMessage()));
         holder.dialogKey = dialogModel.id;
         holder.key = dialogModel.get(position).getKey();
+        holder.uid = dialogModel.get(position).getUid();
     }
 
     @Override
@@ -76,7 +77,7 @@ public class CustomDialogAdapter extends RecyclerView.Adapter<CustomDialogAdapte
 
     protected static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnCreateContextMenuListener {
         TextView name, body, time;
-        String key, dialogKey;
+        String key, dialogKey, uid;
         View item;
 
         public ViewHolder(View itemView) {
@@ -100,7 +101,8 @@ public class CustomDialogAdapter extends RecyclerView.Adapter<CustomDialogAdapte
                         Toast.makeText(MainActivity.activity,"Edit", Toast.LENGTH_LONG).show();
                         return true;
                     case 1:
-                        if (key.equals(Firebasse.getuId())) {
+                        String other = Firebasse.getuId();
+                        if (uid.equals(other)) {
                             Toast.makeText(MainActivity.activity,"Delete",Toast.LENGTH_LONG).show();
                             DatabaseReference ref = Firebasse.getmDatebase().getReference();
                             ref.child("dialogs").child("dialogs").child(dialogKey).child(key).removeValue();

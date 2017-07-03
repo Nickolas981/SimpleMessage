@@ -56,7 +56,21 @@ public class DialogModel {
                         listner.remove(i);
                     }
                 }
+                final DatabaseReference mref = Firebasse.getmDatebase().getReference();
+                mref.child("dialogs").child("dialogs").child(id).limitToLast(1).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        for (DataSnapshot d: dataSnapshot.getChildren()){
+                            MessageModel m = d.getValue(MessageModel.class);
+                            mref.child("dialogs").child("users").child(id).child("lastMessage").setValue(m);
+                        }
+                    }
 
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
             }
 
             @Override
