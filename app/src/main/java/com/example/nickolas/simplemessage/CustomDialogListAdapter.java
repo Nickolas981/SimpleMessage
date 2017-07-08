@@ -22,20 +22,20 @@ public class CustomDialogListAdapter extends RecyclerView.Adapter<CustomDialogLi
 
     @Override
     public int getItemViewType(int position) {
-        String me, you;
+        String me, sender;
         me = Firebasse.getuId();
-        you = dialogs.get(position).last.getUid();
+        sender = dialogs.get(position).last.getUid();
 //        me = dialogs.get(position).last.getUid();
 
 //        if (you.equals(me)){
 //            return 1;
 //        }
 //        return 0;
-        return you.equals(me) ? 1 : 0;
+        return sender.equals(me) ? 1 : 0;
     }
 
     void add() {
-        notifyItemInserted(dialogs.getSize() - 1);
+        notifyDataSetChanged();
     }
 
     void change(int i) {

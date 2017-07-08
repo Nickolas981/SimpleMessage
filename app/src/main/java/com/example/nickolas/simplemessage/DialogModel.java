@@ -32,13 +32,21 @@ public class DialogModel {
         ref.child("dialogs").child("dialogs").child(id).addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                if (!dataSnapshot.getKey().equals(me) && !dataSnapshot.getKey().equals(you)) {
+//                if (!dataSnapshot.getKey().equals(me) && !dataSnapshot.getKey().equals(you)) {
                     MessageModel m = dataSnapshot.getValue(MessageModel.class);
                     m.setKey(dataSnapshot.getKey());
                     messages.add(m);
 //                    messages.add(dataSnapshot.getValue(MessageModel.class).setKey(dataSnapshot.getKey()));
                     listner.add();
-                }
+//                }
+
+//                if (!dataSnapshot.getKey().equals(me) && !dataSnapshot.getKey().equals(you)) {
+//                    if (dataSnapshot.child("type").getValue(String.class).equals("mess")){
+//                        MessageModel m = dataSnapshot.child("content").getValue(MessageModel.class);
+//                        m.setKey(dataSnapshot.getKey());
+//                        messages.add(m);
+//                    }
+//                }
 
             }
 
@@ -65,7 +73,6 @@ public class DialogModel {
                             mref.child("dialogs").child("users").child(id).child("lastMessage").setValue(m);
                         }
                     }
-
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
 

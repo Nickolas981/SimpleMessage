@@ -110,6 +110,8 @@ public class Dialog extends AppCompatActivity implements DialogModel.DialogModel
         DatabaseReference myRef = Firebasse.getmDatebase().getReference();
         editText.setText("");
 
+        myRef.child("dialogs").child("users").child(dialogModel.id).child("lastMessage").setValue(messageModel);
+
         myRef = myRef.child("dialogs").child("dialogs").child(dialogModel.id).push();
         myRef.setValue(messageModel).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override

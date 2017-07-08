@@ -9,7 +9,6 @@ import com.google.firebase.database.Query;
 import java.util.ArrayList;
 
 
-
 public class DialogListModel {
 
     private ArrayList<Dialog> dialogs;
@@ -24,6 +23,7 @@ public class DialogListModel {
         Firebasse.setUser(this);
         parent = 0;
     }
+
     public DialogListModel(MessageService context) {
         dialogs = new ArrayList<>();
 
@@ -32,7 +32,7 @@ public class DialogListModel {
         parent = 1;
     }
 
-    public void setDialogs(){
+    public void setDialogs() {
         DatabaseReference ref = Firebasse.getmDatebase().getReference();
         final Dialog[] d = new Dialog[1];
         Query q = ref.child("dialogs").child("users").orderByChild(Firebasse.getuId()).equalTo(Firebasse.getUser().getName());
@@ -44,24 +44,25 @@ public class DialogListModel {
                 d[0].key = dataSnapshot.getKey();
                 d[0].last = dataSnapshot.child("lastMessage").getValue(MessageModel.class);
                 d[0].photo = d[0].key.replace(Firebasse.getuId(), "");
-                d[0].name =  dataSnapshot.child(d[0].photo).getValue(String.class);
-                if (!suc){
+                d[0].name = dataSnapshot.child(d[0].photo).getValue(String.class);
+                if (!suc) {
                     suc = true;
                     listner.success();
                 }
                 dialogs.add(d[0]);
-                listner.add();
+                if (d[0].last.getUid() != null)
+                    listner.add();
             }
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
                 MessageModel m = dataSnapshot.child("lastMessage").getValue(MessageModel.class);
-                if (m.getUid() != Firebasse.getCurrentUser().getUid() && parent == 1){
+                if (m.getUid() != Firebasse.getCurrentUser().getUid() && parent == 1) {
                     String photo = dataSnapshot.getKey().replace(Firebasse.getuId(), "");
                     String name = dataSnapshot.child(photo).getValue(String.class);
                     listner.changed(m, name, photo);
                 } else {
-                    int i =  getByKey(dataSnapshot.getKey());
+                    int i = getByKey(dataSnapshot.getKey());
                     dialogs.get(i).last = m;
                     listner.changedView(i);
                 }
@@ -84,11 +85,11 @@ public class DialogListModel {
         });
     }
 
-    public Dialog get(int i){
+    public Dialog get(int i) {
         return dialogs.get(i);
     }
 
-    public int getSize(){
+    public int getSize() {
         return dialogs.size();
     }
 
@@ -96,13 +97,13 @@ public class DialogListModel {
         String key;
         MessageModel last;
         String name;
-//        String email;
+        //        String email;
         String photo;
     }
 
-    public int getByKey(String key){
+    public int getByKey(String key) {
         for (int i = 0; i < dialogs.size(); i++) {
-            if(dialogs.get(i).key.equals(key))
+            if (dialogs.get(i).key.equals(key))
                 return i;
         }
         return -1;
@@ -110,8 +111,11 @@ public class DialogListModel {
 
     interface DialogListListner {
         void add();
+
         void success();
-        void changed(MessageModel messageModel,  String name, String photo);
+
+        void changed(MessageModel messageModel, String name, String photo);
+
         void changedView(int i);
     }
 

@@ -5,8 +5,7 @@
     android:layout_height="match_parent"
     tools:context="com.example.nickolas.simplemessage.LoginFragment">
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/login_back">
@@ -51,6 +50,7 @@
                     android:layout_height="48dp"
                     android:background="@null"
                     android:hint="@string/pass"
+                    android:inputType="textPassword"
                     android:paddingStart="15dp"
                     android:singleLine="true"
                     android:textCursorDrawable="@null" />
@@ -67,11 +67,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="@color/colorPrimary">
+
                     <ProgressBar
+                        android:id="@+id/progress_bar"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:id="@+id/progress_bar"/>
+                        android:layout_gravity="center" />
 
                     <Button
                         android:id="@+id/log_in"
@@ -81,40 +82,37 @@
                         android:text="@string/log_in"
                         android:textColor="#fff" />
                 </FrameLayout>
-
             </android.support.v7.widget.CardView>
 
             <LinearLayout
                 android:layout_width="350dp"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_gravity="center">
+                android:layout_gravity="center"
+                android:orientation="horizontal">
 
                 <View
                     android:layout_width="0dp"
                     android:layout_height="1dp"
-                    android:layout_weight="1"
                     android:layout_gravity="center"
-                    android:background="#fff"/>
+                    android:layout_weight="1"
+                    android:background="#fff" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:text="OR"
                     android:layout_margin="10dp"
+                    android:text="OR"
                     android:textColor="#fff"
                     android:textStyle="bold" />
 
                 <View
                     android:layout_width="0dp"
                     android:layout_height="1dp"
-                    android:layout_weight="1"
                     android:layout_gravity="center"
-                    android:background="#fff"/>
-
+                    android:layout_weight="1"
+                    android:background="#fff" />
             </LinearLayout>
-
 
             <android.support.v7.widget.CardView
                 android:layout_width="300dp"
@@ -122,19 +120,15 @@
                 android:layout_gravity="center"
                 card_view:cardCornerRadius="4dp"
                 card_view:cardElevation="15dp">
-                    <Button
-                        android:layout_width="300dp"
-                        android:layout_height="48dp"
-                        android:background="@color/colorPrimary"
-                        android:text="@string/registration"
-                        android:textColor="#fff"
-                        android:id="@+id/registration"/>
 
+                <Button
+                    android:id="@+id/registration"
+                    android:layout_width="300dp"
+                    android:layout_height="48dp"
+                    android:background="@color/colorPrimary"
+                    android:text="@string/registration"
+                    android:textColor="#fff" />
             </android.support.v7.widget.CardView>
-
-
         </LinearLayout>
-
     </LinearLayout>
-
 </FrameLayout>
